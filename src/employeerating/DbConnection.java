@@ -22,13 +22,13 @@ import javax.swing.table.DefaultTableModel;
  * @author macbookpro
  */
 public class DbConnection {
-    
+
     public Connection conn;
-    
+
     public DbConnection() {
-        
+
     }
-    
+
     public Connection openConnection() throws ClassNotFoundException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -41,7 +41,7 @@ public class DbConnection {
             return null;
         }
     }
-    
+
     public void closeConnection() throws SQLException {
         try {
             if (conn != null) {
@@ -49,19 +49,19 @@ public class DbConnection {
             }
         } catch (Exception ex) {
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
-            
+
         }
     }
-    
+
     public ResultSet login(String username, String password) {
         ResultSet rsLogin = null;
         try {
             Connection connection = openConnection();
             Statement stm = connection.createStatement();
             rsLogin = stm.executeQuery("SELECT * FROM user WHERE user_name = '" + username + "' AND user_password = '" + password + "'");
-            
+
             rsLogin.next();
-            
+
             closeConnection();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
@@ -70,7 +70,7 @@ public class DbConnection {
         }
         return rsLogin;
     }
-    
+
     public boolean usernameAvailable(String username) {
         ResultSet rsLogin = null;
         boolean isAvailable = true;
@@ -79,10 +79,10 @@ public class DbConnection {
             Connection connection = openConnection();
             Statement stm = connection.createStatement();
             rsLogin = stm.executeQuery("SELECT * FROM user WHERE user_name = '" + username + "'");
-            
+
             rsLogin.next();
             size = rsLogin.getRow();
-            
+
             if (size != 0) {
                 isAvailable = false;
             }
@@ -94,39 +94,39 @@ public class DbConnection {
         }
         return isAvailable;
     }
-    
+
     public int InsertUserRegister(String userId, String name, String password, String isActive, String userRole) {
         int id = 0;
-        
+
         try {
             Connection connection = openConnection();
             Statement stm = connection.createStatement();
             int rsInsertUserProfile = stm.executeUpdate("INSERT INTO user (user_id, user_name, user_password, is_active, user_role) VALUES ('" + userId + "','" + name + "','" + password + "','" + isActive + "','" + userRole + "')");
             id = rsInsertUserProfile;
-            
+
             closeConnection();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
-        
+
         return id;
     }
-    
+
     public ArrayList<CriteriaModel> SelectListCriteria() {
         ResultSet rsSelectCriteria = null;
         ArrayList<CriteriaModel> resultList = new ArrayList<CriteriaModel>();
-        
+
         try {
             Connection conn = openConnection();
             Statement stm = conn.createStatement();
-            
+
             rsSelectCriteria = stm.executeQuery("SELECT @n := @n + 1 AS no, a.* "
                     + "FROM (SELECT * FROM criteria ORDER BY criteria_id) AS a, "
                     + "(SELECT @n := 0) m "
             );
-            
+
             while (rsSelectCriteria.next()) {
                 CriteriaModel criteriaModel = new CriteriaModel();
                 criteriaModel.setCriteriaId(rsSelectCriteria.getString("criteria_id"));
@@ -145,21 +145,21 @@ public class DbConnection {
         }
         return resultList;
     }
-    
+
     public CriteriaModel SelectCriteriaByIndex(String index) {
         ResultSet rsSelectCriteria = null;
         CriteriaModel criteriaModel = new CriteriaModel();
         try {
             Connection conn = openConnection();
             Statement stm = conn.createStatement();
-            
+
             rsSelectCriteria = stm.executeQuery("SELECT * FROM "
                     + "(SELECT @n := @n + 1 AS no, a.* FROM "
                     + "(SELECT * FROM criteria ORDER BY criteria_id) AS a, "
                     + "(SELECT @n := 0) m) as b "
                     + "WHERE b.no = " + index
             );
-            
+
             while (rsSelectCriteria.next()) {
                 criteriaModel.setCriteriaId(rsSelectCriteria.getString("criteria_id"));
                 criteriaModel.setCriteriaName(rsSelectCriteria.getString("criteria_name"));
@@ -174,13 +174,13 @@ public class DbConnection {
             ex.printStackTrace();
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
-        
+
         return criteriaModel;
     }
-    
+
     public int UpdateCriteriaById(String criteriaId, String criteriaName, String criteriaAmount, String criteriaDesc) {
         int id = 0;
-        
+
         try {
             Connection connection = openConnection();
             Statement stm = connection.createStatement();
@@ -190,20 +190,20 @@ public class DbConnection {
                     + "criteria_desc='" + criteriaDesc + "' "
                     + "WHERE criteria_id = '" + criteriaId + "'");
             id = rsUpdateCriteria;
-            
+
             closeConnection();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
-        
+
         return id;
     }
-    
+
     public int InsertEmployee(String employeeId, String employeeName, String employeePosition, String employeeAddress, String employeePhone) {
         int id = 0;
-        
+
         try {
             Connection connection = openConnection();
             Statement stm = connection.createStatement();
@@ -211,17 +211,17 @@ public class DbConnection {
                     + "(employee_id, employee_name, employee_position, employee_address, employee_phone) VALUES "
                     + "('" + employeeId + "','" + employeeName + "','" + employeePosition + "','" + employeeAddress + "','" + employeePhone + "')");
             id = rsInsertEmployee;
-            
+
             closeConnection();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
-        
+
         return id;
     }
-    
+
     public DefaultTableModel SelectListEmployee() {
         ResultSet rsSelectEmployee = null;
         ArrayList<EmployeeModel> resultList = new ArrayList<EmployeeModel>();
@@ -230,19 +230,19 @@ public class DbConnection {
         try {
             Connection conn = openConnection();
             Statement stm = conn.createStatement();
-            
+
             rsSelectEmployee = stm.executeQuery("SELECT @n := @n + 1 AS no, a.* "
                     + "FROM (SELECT * FROM employee ORDER BY employee_id) AS a, "
                     + "(SELECT @n := 0) m "
             );
-            
+
             while (rsSelectEmployee.next()) {
                 Object[] data = {String.valueOf(rsSelectEmployee.getInt("no")),
                     rsSelectEmployee.getString("employee_name"),
                     rsSelectEmployee.getString("employee_position"),
                     rsSelectEmployee.getString("employee_address"),
                     rsSelectEmployee.getString("employee_phone")};
-                
+
                 tableModel.addRow(data);
             }
             closeConnection();
@@ -255,23 +255,23 @@ public class DbConnection {
         }
         return tableModel;
     }
-    
+
     public ArrayList<RatingModel> SelectListRatingWithEmployee() {
         ResultSet rsSelectRating = null;
         ArrayList<RatingModel> resultList = new ArrayList<RatingModel>();
         try {
             Connection conn = openConnection();
             Statement stm = conn.createStatement();
-            
+
             rsSelectRating = stm.executeQuery("SELECT @n := @n + 1 AS no, a.* FROM "
                     + "(SELECT employee.*, COALESCE(rating.rating_id, '0') AS rating_id, "
                     + "COALESCE(rating.rating_value, '{}') AS rating_value, COALESCE(rating.rating_value2, '{}') AS rating_value2 "
                     + "FROM employee LEFT JOIN rating ON employee.employee_id = rating.employee_id) AS a, "
                     + "(SELECT @n := 0) m;"
             );
-            
+
             while (rsSelectRating.next()) {
-                
+
                 RatingModel data = new RatingModel();
                 data.setEmployeeId(rsSelectRating.getString("employee_id"));
                 data.setEmployeeaName(rsSelectRating.getString("employee_name"));
@@ -281,7 +281,7 @@ public class DbConnection {
                 data.setRatingId(rsSelectRating.getString("rating_id"));
                 data.setRatingValue(rsSelectRating.getString("rating_value"));
                 data.setRatingValue2(rsSelectRating.getString("rating_value2"));
-                
+
                 resultList.add(data);
             }
             closeConnection();
@@ -291,5 +291,89 @@ public class DbConnection {
             System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
         return resultList;
+    }
+
+    public int InsertRating(String ratingId, String employeeId, String ratingValue, String ratingValue2) {
+        int id = 0;
+
+        try {
+            Connection connection = openConnection();
+            Statement stm = connection.createStatement();
+            int rsInsertRating = stm.executeUpdate("INSERT INTO rating"
+                    + "(rating_id, employee_id, rating_value, rating_value2) VALUES "
+                    + "('" + ratingId + "','" + employeeId + "','" + ratingValue + "','" + ratingValue2 + "')");
+            id = rsInsertRating;
+
+            closeConnection();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+
+        return id;
+    }
+
+    public int UpdateRating(String ratingId, String employeeId, String ratingValue, String ratingValue2) {
+        int id = 0;
+
+        try {
+            Connection connection = openConnection();
+            Statement stm = connection.createStatement();
+            ResultSet r = stm.executeQuery("SELECT COUNT(*) AS recordCount FROM rating WHERE employee_id = '" + employeeId + "'");
+            r.next();
+            int count = r.getInt("recordCount");
+            r.close();
+
+            if (count > 0) {
+                int rsUpdateRating = stm.executeUpdate("UPDATE rating SET "
+                        + "rating_value='" + ratingValue + "', "
+                        + "rating_value2='" + ratingValue2 + "' "
+                        + "WHERE employee_id = '" + employeeId + "'");
+                id = rsUpdateRating;
+            } else {
+                InsertRating(ratingId, employeeId, ratingValue, ratingValue2);
+            }
+
+            closeConnection();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+
+        return id;
+    }
+
+    public EmployeeModel SelectEmployeeByIndex(String index) {
+        ResultSet rsSelectEmployee = null;
+        EmployeeModel result = new EmployeeModel();
+        try {
+            Connection conn = openConnection();
+            Statement stm = conn.createStatement();
+
+            rsSelectEmployee = stm.executeQuery("SELECT * FROM "
+                    + "(SELECT @n := @n + 1 AS no, a.* FROM "
+                    + "(SELECT * FROM employee ORDER BY employee_id) AS a, "
+                    + "(SELECT @n := 0) m) as b "
+                    + "WHERE b.no = " + index
+            );
+
+            while (rsSelectEmployee.next()) {
+                result.setEmployeeId(rsSelectEmployee.getString("employee_id"));
+                result.setEmployeeaName(rsSelectEmployee.getString("employee_name"));
+                result.setEmployeePosition(rsSelectEmployee.getString("employee_position"));
+                result.setEmployeeAddress(rsSelectEmployee.getString("employee_address"));
+                result.setEmployeePhone(rsSelectEmployee.getString("employee_phone"));
+            }
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+        return result;
     }
 }

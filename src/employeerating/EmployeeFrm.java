@@ -6,6 +6,8 @@ package employeerating;
 
 import employeerating.dialog.EmployeeDialog;
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
@@ -41,7 +43,7 @@ public class EmployeeFrm extends JInternalFrame {
 
     }
 
-    private void generateDataToTable() {
+    public void generateDataToTable() {
         //data product
         DefaultTableModel rsSelect0 = new DbConnection().SelectListEmployee();
         System.out.println("raw count employee " + rsSelect0.getRowCount());
@@ -108,6 +110,12 @@ public class EmployeeFrm extends JInternalFrame {
     private void btnAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEmployeeActionPerformed
         // TODO add your handling code here:
         EmployeeDialog dialog = new EmployeeDialog(frame, true, newId);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                generateDataToTable();
+            }
+        });
         dialog.setVisible(true);
     }//GEN-LAST:event_btnAddEmployeeActionPerformed
 

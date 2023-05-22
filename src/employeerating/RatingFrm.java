@@ -4,9 +4,15 @@
  */
 package employeerating;
 
+import com.google.gson.Gson;
+import employeerating.dialog.CriteriaDialog;
+import employeerating.dialog.ScoreDialog;
 import employeerating.model.CriteriaModel;
 import employeerating.model.RatingModel;
+import employeerating.model.RatingValueModel;
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -21,6 +27,8 @@ public class RatingFrm extends javax.swing.JInternalFrame {
 
     private String employeeId;
     private final Frame frame;
+    private ArrayList<RatingModel> ratingModels;
+    private ArrayList<CriteriaModel> criteriaModels;
 
     /**
      * Creates new form HomeFrm
@@ -65,6 +73,11 @@ public class RatingFrm extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tableScore.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableScoreMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableScore);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -81,6 +94,22 @@ public class RatingFrm extends javax.swing.JInternalFrame {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tableScoreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableScoreMouseClicked
+        // TODO add your handling code here:
+        int row = tableScore.getSelectedRow();
+        String row_id = (tableScore.getModel().getValueAt(row, 0).toString());
+        employeeId = row_id;
+        System.out.println("employeeId : " + employeeId);
+        ScoreDialog dialog = new ScoreDialog(frame, true, employeeId);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                generateDataToTable();
+            }
+        });
+        dialog.setVisible(true);
+    }//GEN-LAST:event_tableScoreMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
@@ -88,8 +117,8 @@ public class RatingFrm extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void generateDataToTable() {
-        ArrayList<RatingModel> ratingModels = new DbConnection().SelectListRatingWithEmployee();
-        ArrayList<CriteriaModel> criteriaModels = new DbConnection().SelectListCriteria();
+        ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        criteriaModels = new DbConnection().SelectListCriteria();
         String col[] = new String[2 + criteriaModels.size()];
         col[0] = "No";
         col[1] = "Nama";
@@ -103,7 +132,26 @@ public class RatingFrm extends javax.swing.JInternalFrame {
                 if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
                     data[j + 2] = "0";
                 } else {
-                    data[j + 2] = criteriaModels.get(j).getCriteriaName();
+                    RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
+                    switch (j) {
+                        case 0:
+                            data[j + 2] = ratingValueModel.K1;
+                            break;
+                        case 1:
+                            data[j + 2] = ratingValueModel.K2;
+                            break;
+                        case 2:
+                            data[j + 2] = ratingValueModel.K3;
+                            break;
+                        case 3:
+                            data[j + 2] = ratingValueModel.K4;
+                            break;
+                        case 4:
+                            data[j + 2] = ratingValueModel.K5;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             if (tableModel == null) {

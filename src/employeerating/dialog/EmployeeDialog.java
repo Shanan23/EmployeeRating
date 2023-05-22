@@ -5,6 +5,7 @@
 package employeerating.dialog;
 
 import employeerating.DbConnection;
+import static employeerating.dialog.ScoreDialog.employeeId;
 import java.awt.Frame;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -16,6 +17,7 @@ import javax.swing.JFrame;
 public class EmployeeDialog extends JDialog {
 
     static String employeeId;
+    Frame parent;
 
     /**
      * Creates new form EmployeeDialog
@@ -24,9 +26,11 @@ public class EmployeeDialog extends JDialog {
      * @param modal
      * @param newId
      */
+
     public EmployeeDialog(Frame parent, boolean modal, String newId) {
         super(parent, modal);
         initComponents();
+        this.parent = parent;
         employeeId = newId;
     }
 
@@ -122,8 +126,8 @@ public class EmployeeDialog extends JDialog {
         String employeePhone = tfEmployeePhone.getText();
 
         new DbConnection().InsertEmployee(employeeId, employeeName, employeePosition, employeeAddress, employeePhone);
+        new DbConnection().InsertRating(employeeId, employeeId, "{}", "{}");
         setVisible(false);
-
     }//GEN-LAST:event_btnAddEmployeeActionPerformed
 
     /**

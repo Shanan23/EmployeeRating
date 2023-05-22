@@ -85,5 +85,4 @@ public class RatingModel {
     public void setEmployeePhone(String employeePhone) {
         this.employeePhone = employeePhone;
     }
-
 }
