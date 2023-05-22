@@ -8,15 +8,42 @@ package employeerating.model;
  *
  * @author macbookpro
  */
-public class EmployeeModel {
+public class RatingModel {
 
     public String employeeId;
     public String employeeaName;
     public String employeePosition;
     public String employeeAddress;
     public String employeePhone;
+    public String ratingId;
+    public String ratingValue;
+    public String ratingValue2;
 
-    public EmployeeModel() {
+    public RatingModel() {
+    }
+
+    public String getRatingId() {
+        return ratingId;
+    }
+
+    public void setRatingId(String ratingId) {
+        this.ratingId = ratingId;
+    }
+
+    public String getRatingValue() {
+        return ratingValue;
+    }
+
+    public void setRatingValue(String ratingValue) {
+        this.ratingValue = ratingValue;
+    }
+
+    public String getRatingValue2() {
+        return ratingValue2;
+    }
+
+    public void setRatingValue2(String ratingValue2) {
+        this.ratingValue2 = ratingValue2;
     }
 
     public String getEmployeeId() {

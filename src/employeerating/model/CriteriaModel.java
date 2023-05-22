@@ -9,46 +9,44 @@ package employeerating.model;
  * @author macbookpro
  */
 public class CriteriaModel {
-        public static String criteriaId;
-        public static String criteriaName;
-        public static String criteriaAmount;
-        public static String criteriaDesc;
+
+    public String criteriaId;
+    public String criteriaName;
+    public String criteriaAmount;
+    public String criteriaDesc;
 
     public CriteriaModel() {
     }
 
-    public static String getCriteriaId() {
+    public String getCriteriaId() {
         return criteriaId;
     }
 
-    public static void setCriteriaId(String criteriaId) {
-        CriteriaModel.criteriaId = criteriaId;
+    public void setCriteriaId(String criteriaId) {
+        this.criteriaId = criteriaId;
     }
 
-    public static String getCriteriaName() {
+    public String getCriteriaName() {
         return criteriaName;
     }
 
-    public static void setCriteriaName(String criteriaName) {
-        CriteriaModel.criteriaName = criteriaName;
+    public void setCriteriaName(String criteriaName) {
+        this.criteriaName = criteriaName;
     }
 
-    public static String getCriteriaAmount() {
+    public String getCriteriaAmount() {
         return criteriaAmount;
     }
 
-    public static void setCriteriaAmount(String criteriaAmount) {
-        CriteriaModel.criteriaAmount = criteriaAmount;
+    public void setCriteriaAmount(String criteriaAmount) {
+        this.criteriaAmount = criteriaAmount;
     }
 
-    public static String getCriteriaDesc() {
+    public String getCriteriaDesc() {
         return criteriaDesc;
     }
 
-    public static void setCriteriaDesc(String criteriaDesc) {
-        CriteriaModel.criteriaDesc = criteriaDesc;
+    public void setCriteriaDesc(String criteriaDesc) {
+        this.criteriaDesc = criteriaDesc;
     }
-        
-        
-
 }

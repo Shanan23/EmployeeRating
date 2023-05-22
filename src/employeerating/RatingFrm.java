@@ -4,17 +4,40 @@
  */
 package employeerating;
 
+import employeerating.model.CriteriaModel;
+import employeerating.model.RatingModel;
+import java.awt.Frame;
+import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author macbookpro
  */
 public class RatingFrm extends javax.swing.JInternalFrame {
 
+    private String employeeId;
+    private final Frame frame;
+
     /**
      * Creates new form HomeFrm
      */
     public RatingFrm() {
         initComponents();
+        generateDataToTable();
+        JInternalFrame internalFrame = this; // Replace with your internal frame
+
+        frame = (Frame) SwingUtilities.getAncestorOfClass(JFrame.class, internalFrame);
+        if (frame != null) {
+            // You have the frame reference
+            System.out.println("Found frame: " + frame.getTitle());
+        } else {
+            // Frame not found
+            System.out.println("Could not find frame for the internal frame.");
+        }
     }
 
     /**
@@ -26,32 +49,71 @@ public class RatingFrm extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableScore = new javax.swing.JTable();
 
         setSize(new java.awt.Dimension(100, 100));
 
-        jLabel1.setText("Rating Frame");
+        tableScore.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tableScore);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(216, 216, 216)
-                .addComponent(jLabel1)
-                .addContainerGap(429, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(jLabel1)
-                .addContainerGap(252, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 62, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableScore;
     // End of variables declaration//GEN-END:variables
+
+    private void generateDataToTable() {
+        ArrayList<RatingModel> ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        ArrayList<CriteriaModel> criteriaModels = new DbConnection().SelectListCriteria();
+        String col[] = new String[2 + criteriaModels.size()];
+        col[0] = "No";
+        col[1] = "Nama";
+        DefaultTableModel tableModel = null;
+        for (int i = 0; i < ratingModels.size(); i++) {
+            Object[] data = new Object[2 + criteriaModels.size()];
+            data[0] = i + 1;
+            data[1] = ratingModels.get(i).getEmployeeaName();
+            for (int j = 0; j < criteriaModels.size(); j++) {
+                col[j + 2] = criteriaModels.get(j).getCriteriaName();
+                if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
+                    data[j + 2] = "0";
+                } else {
+                    data[j + 2] = criteriaModels.get(j).getCriteriaName();
+                }
+            }
+            if (tableModel == null) {
+                tableModel = new DefaultTableModel(col, 0);
+            }
+
+            tableModel.addRow(data);
+        }
+
+        System.out.println("raw count rating by employee " + tableModel.getRowCount());
+        tableScore.setModel(tableModel);
+    }
 }
