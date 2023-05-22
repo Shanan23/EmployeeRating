@@ -4,17 +4,51 @@
  */
 package employeerating;
 
+import employeerating.dialog.EmployeeDialog;
+import java.awt.Frame;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author macbookpro
  */
-public class EmployeeFrm extends javax.swing.JInternalFrame {
+public class EmployeeFrm extends JInternalFrame {
+
+    private final Frame frame;
+    private String employeeIdDefault = "E000000000";
+    private String newId;
 
     /**
      * Creates new form HomeFrm
      */
     public EmployeeFrm() {
         initComponents();
+        generateDataToTable();
+
+        JInternalFrame internalFrame = this; // Replace with your internal frame
+
+        frame = (Frame) SwingUtilities.getAncestorOfClass(JFrame.class, internalFrame);
+        if (frame != null) {
+            // You have the frame reference
+            System.out.println("Found frame: " + frame.getTitle());
+        } else {
+            // Frame not found
+            System.out.println("Could not find frame for the internal frame.");
+        }
+
+    }
+
+    private void generateDataToTable() {
+        //data product
+        DefaultTableModel rsSelect0 = new DbConnection().SelectListEmployee();
+        System.out.println("raw count employee " + rsSelect0.getRowCount());
+        String maxId = String.valueOf(rsSelect0.getRowCount() + 1);
+        String newEmployeeIdDefault = employeeIdDefault.substring(0, employeeIdDefault.length() - maxId.length());
+        newId = newEmployeeIdDefault + maxId;
+        tableEmployee.setModel(rsSelect0);
     }
 
     /**
@@ -26,32 +60,61 @@ public class EmployeeFrm extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableEmployee = new javax.swing.JTable();
+        btnAddEmployee = new javax.swing.JButton();
 
         setSize(new java.awt.Dimension(100, 100));
 
-        jLabel1.setText("Employee Frame");
+        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tableEmployee);
+
+        btnAddEmployee.setText("Tambah Karyawan");
+        btnAddEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddEmployeeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(216, 216, 216)
-                .addComponent(jLabel1)
-                .addContainerGap(412, Short.MAX_VALUE))
+                .addComponent(btnAddEmployee)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(jLabel1)
-                .addContainerGap(252, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 14, Short.MAX_VALUE)
+                .addComponent(btnAddEmployee)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEmployeeActionPerformed
+        // TODO add your handling code here:
+        EmployeeDialog dialog = new EmployeeDialog(frame, true, newId);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnAddEmployeeActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnAddEmployee;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableEmployee;
     // End of variables declaration//GEN-END:variables
 }

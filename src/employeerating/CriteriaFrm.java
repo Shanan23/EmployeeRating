@@ -4,17 +4,46 @@
  */
 package employeerating;
 
+import employeerating.dialog.CriteriaDialog;
+import java.awt.Frame;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author macbookpro
  */
-public class CriteriaFrm extends javax.swing.JInternalFrame {
+public class CriteriaFrm extends JInternalFrame {
+
+    private String criteriaId;
+    private final Frame frame;
 
     /**
      * Creates new form HomeFrm
      */
     public CriteriaFrm() {
         initComponents();
+        generateDataToTable();
+        JInternalFrame internalFrame = this; // Replace with your internal frame
+
+        frame = (Frame) SwingUtilities.getAncestorOfClass(JFrame.class, internalFrame);
+        if (frame != null) {
+            // You have the frame reference
+            System.out.println("Found frame: " + frame.getTitle());
+        } else {
+            // Frame not found
+            System.out.println("Could not find frame for the internal frame.");
+        }
+    }
+
+    private void generateDataToTable() {
+        //data product
+        DefaultTableModel rsSelect0 = new DbConnection().SelectListCriteria();
+        System.out.println("raw count product by id shop " + rsSelect0.getRowCount());
+        tableCriteria.setModel(rsSelect0);
     }
 
     /**
@@ -26,32 +55,79 @@ public class CriteriaFrm extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableCriteria = new javax.swing.JTable();
 
         setSize(new java.awt.Dimension(100, 100));
 
-        jLabel1.setText("Criteria Frame");
+        tableCriteria.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableCriteria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCriteriaMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableCriteriaMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableCriteriaMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableCriteria);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(216, 216, 216)
-                .addComponent(jLabel1)
-                .addContainerGap(423, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(jLabel1)
-                .addContainerGap(252, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tableCriteriaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCriteriaMouseReleased
+        int row = tableCriteria.getSelectedRow();
+        String row_id = (tableCriteria.getModel().getValueAt(row, 0).toString());
+        criteriaId = row_id;
+        System.out.println("criteriaId : " + criteriaId);
+        CriteriaDialog dialog = new CriteriaDialog(frame, true, criteriaId);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_tableCriteriaMouseReleased
+
+    private void tableCriteriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCriteriaMouseClicked
+        int row = tableCriteria.getSelectedRow();
+        String row_id = (tableCriteria.getModel().getValueAt(row, 0).toString());
+        criteriaId = row_id;
+        System.out.println("criteriaId : " + criteriaId);
+        CriteriaDialog dialog = new CriteriaDialog(frame, true, criteriaId);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_tableCriteriaMouseClicked
+
+    private void tableCriteriaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCriteriaMousePressed
+        int row = tableCriteria.getSelectedRow();
+        String row_id = (tableCriteria.getModel().getValueAt(row, 0).toString());
+        criteriaId = row_id;
+        System.out.println("criteriaId : " + criteriaId);
+        CriteriaDialog dialog = new CriteriaDialog(frame, true, criteriaId);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_tableCriteriaMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableCriteria;
     // End of variables declaration//GEN-END:variables
 }

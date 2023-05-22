@@ -4,12 +4,17 @@
  */
 package employeerating;
 
+import employeerating.model.CriteriaModel;
+import employeerating.model.EmployeeModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -39,10 +44,10 @@ public class DbConnection {
     public void closeConnection() throws SQLException {
         try {
             if (conn != null) {
-                System.out.print("Tutup Koneksi\n");
+                System.out.println("Tutup Koneksi\n");
             }
         } catch (Exception ex) {
-            System.out.print(DbConnection.class.getName() + " : " + ex.getMessage());
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
 
         }
     }
@@ -60,7 +65,7 @@ public class DbConnection {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
-            System.out.print(DbConnection.class.getName() + " : " + ex.getMessage());
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
         return rsLogin;
     }
@@ -84,7 +89,7 @@ public class DbConnection {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
-            System.out.print(DbConnection.class.getName() + " : " + ex.getMessage());
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
         return isAvailable;
     }
@@ -102,10 +107,155 @@ public class DbConnection {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e);
         } catch (ClassNotFoundException ex) {
-            System.out.print(DbConnection.class.getName() + " : " + ex.getMessage());
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
         }
 
         return id;
     }
 
+    public DefaultTableModel SelectListCriteria() {
+        ResultSet rsSelectCriteria = null;
+        ArrayList<CriteriaModel> resultList = new ArrayList<CriteriaModel>();
+        String col[] = {"No", "Nama", "Bobot",
+            "Deskripsi"};
+        DefaultTableModel tableModel = new DefaultTableModel(col, 0);
+        try {
+            Connection conn = openConnection();
+            Statement stm = conn.createStatement();
+
+            rsSelectCriteria = stm.executeQuery("SELECT @n := @n + 1 AS no, a.* "
+                    + "FROM (SELECT * FROM criteria ORDER BY criteria_id) AS a, "
+                    + "(SELECT @n := 0) m "
+            );
+
+            while (rsSelectCriteria.next()) {
+                Vector<Object> newRow = new Vector<Object>();
+
+                Object[] data = {String.valueOf(rsSelectCriteria.getInt("no")),
+                    rsSelectCriteria.getString("criteria_name"),
+                    rsSelectCriteria.getString("criteria_amount"),
+                    rsSelectCriteria.getString("criteria_desc")};
+
+                tableModel.addRow(data);
+            }
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+        return tableModel;
+    }
+
+    public CriteriaModel SelectCriteriaByIndex(String index) {
+        ResultSet rsSelectCriteria = null;
+        CriteriaModel criteriaModel = new CriteriaModel();
+        try {
+            Connection conn = openConnection();
+            Statement stm = conn.createStatement();
+
+            rsSelectCriteria = stm.executeQuery("SELECT * FROM "
+                    + "(SELECT @n := @n + 1 AS no, a.* FROM "
+                    + "(SELECT * FROM criteria ORDER BY criteria_id) AS a, "
+                    + "(SELECT @n := 0) m) as b "
+                    + "WHERE b.no = " + index
+            );
+
+            while (rsSelectCriteria.next()) {
+                criteriaModel.setCriteriaId(rsSelectCriteria.getString("criteria_id"));
+                criteriaModel.setCriteriaName(rsSelectCriteria.getString("criteria_name"));
+                criteriaModel.setCriteriaAmount(rsSelectCriteria.getString("criteria_amount"));
+                criteriaModel.setCriteriaDesc(rsSelectCriteria.getString("criteria_desc"));
+            }
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+
+        return criteriaModel;
+    }
+
+    public int UpdateCriteriaById(String criteriaId, String criteriaName, String criteriaAmount, String criteriaDesc) {
+        int id = 0;
+
+        try {
+            Connection connection = openConnection();
+            Statement stm = connection.createStatement();
+            int rsUpdateCriteria = stm.executeUpdate("UPDATE criteria SET "
+                    + "criteria_name='" + criteriaName + "', "
+                    + "criteria_amount='" + criteriaAmount + "', "
+                    + "criteria_desc='" + criteriaDesc + "' "
+                    + "WHERE criteria_id = '" + criteriaId + "'");
+            id = rsUpdateCriteria;
+
+            closeConnection();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+
+        return id;
+    }
+
+    public int InsertEmployee(String employeeId, String employeeName, String employeePosition, String employeeAddress, String employeePhone) {
+        int id = 0;
+
+        try {
+            Connection connection = openConnection();
+            Statement stm = connection.createStatement();
+            int rsInsertEmployee = stm.executeUpdate("INSERT INTO employee"
+                    + "(employee_id, employee_name, employee_position, employee_address, employee_phone) VALUES "
+                    + "('" + employeeId + "','" + employeeName + "','" + employeePosition + "','" + employeeAddress + "','" + employeePhone + "')");
+            id = rsInsertEmployee;
+
+            closeConnection();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+
+        return id;
+    }
+
+    public DefaultTableModel SelectListEmployee() {
+        ResultSet rsSelectEmployee = null;
+        ArrayList<EmployeeModel> resultList = new ArrayList<EmployeeModel>();
+        String col[] = {"No", "Nama", "Jabatan", "Alamat", "Telepon"};
+        DefaultTableModel tableModel = new DefaultTableModel(col, 0);
+        try {
+            Connection conn = openConnection();
+            Statement stm = conn.createStatement();
+
+            rsSelectEmployee = stm.executeQuery("SELECT @n := @n + 1 AS no, a.* "
+                    + "FROM (SELECT * FROM employee ORDER BY employee_id) AS a, "
+                    + "(SELECT @n := 0) m "
+            );
+
+            while (rsSelectEmployee.next()) {
+                Object[] data = {String.valueOf(rsSelectEmployee.getInt("no")),
+                    rsSelectEmployee.getString("employee_name"),
+                    rsSelectEmployee.getString("employee_position"),
+                    rsSelectEmployee.getString("employee_address"),
+                    rsSelectEmployee.getString("employee_phone")};
+
+                tableModel.addRow(data);
+            }
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+        return tableModel;
+    }
 }

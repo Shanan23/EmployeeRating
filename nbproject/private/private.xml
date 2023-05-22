@@ -4,12 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/CriteriaFrm.java</file>
-            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/RatingFrm.java</file>
             <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/DbConnection.java</file>
-            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/HomeFrm.java</file>
-            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/FrmLogin.java</file>
-            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/CalculatedFrm.java</file>
-            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/EmployeeFrm.java</file>
+            <file>file:/Users/macbookpro/NetBeansProjects/EmployeeRating/src/employeerating/model/CriteriaModel.java</file>
         </group>
     </open-files>
 </project-private>
