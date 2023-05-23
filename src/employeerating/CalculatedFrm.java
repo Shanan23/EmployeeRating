@@ -197,14 +197,14 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlPrint, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRealData)
                     .addComponent(btnMinGap)
                     .addComponent(btnMapGap)
                     .addComponent(btnRanking)
                     .addComponent(btnPrint))
-                .addContainerGap())
+                .addGap(39, 39, 39))
         );
     }// </editor-fold>//GEN-END:initComponents
 
