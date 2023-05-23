@@ -8,16 +8,39 @@ import com.google.gson.Gson;
 import employeerating.dialog.CriteriaDialog;
 import employeerating.dialog.ScoreDialog;
 import employeerating.model.CriteriaModel;
+import employeerating.model.RankingModel;
 import employeerating.model.RatingModel;
 import employeerating.model.RatingValueModel;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
+import org.icepdf.ri.common.SwingController;
+import org.icepdf.ri.common.SwingViewBuilder;
 
 /**
  *
@@ -61,13 +84,16 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlPrint = new java.awt.Panel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableScore = new javax.swing.JTable();
         btnRealData = new javax.swing.JButton();
         btnMinGap = new javax.swing.JButton();
         btnMapGap = new javax.swing.JButton();
         btnRanking = new javax.swing.JButton();
+        btnPrint = new javax.swing.JButton();
 
+        setPreferredSize(new java.awt.Dimension(700, 493));
         setSize(new java.awt.Dimension(100, 100));
 
         tableScore.setModel(new javax.swing.table.DefaultTableModel(
@@ -87,6 +113,27 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tableScore);
+
+        javax.swing.GroupLayout pnlPrintLayout = new javax.swing.GroupLayout(pnlPrint);
+        pnlPrint.setLayout(pnlPrintLayout);
+        pnlPrintLayout.setHorizontalGroup(
+            pnlPrintLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 791, Short.MAX_VALUE)
+            .addGroup(pnlPrintLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlPrintLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        pnlPrintLayout.setVerticalGroup(
+            pnlPrintLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 341, Short.MAX_VALUE)
+            .addGroup(pnlPrintLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlPrintLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
 
         btnRealData.setText("Data Asli");
         btnRealData.addActionListener(new java.awt.event.ActionListener() {
@@ -116,33 +163,48 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
             }
         });
 
+        btnPrint.setText("Print");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(btnRealData)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnMinGap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnMapGap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRanking)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnRealData)
+                        .addGap(120, 120, 120)
+                        .addComponent(btnMinGap)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnMapGap)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnRanking)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnPrint))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlPrint, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(62, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
+                .addComponent(pnlPrint, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRealData)
                     .addComponent(btnMinGap)
                     .addComponent(btnMapGap)
-                    .addComponent(btnRanking))
-                .addGap(36, 36, 36))
+                    .addComponent(btnRanking)
+                    .addComponent(btnPrint))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -170,13 +232,74 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
         generateDataToTableRanking();
     }//GEN-LAST:event_btnRankingActionPerformed
 
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        // TODO add your handling code here:
+        try {
+            jScrollPane1.getViewport().setBackground(Color.WHITE);
+            Document document = new Document(PageSize.A4);
+            File fileSave = new File("invoice");
+            if (!fileSave.exists()) {
+                fileSave.mkdir();
+            }
+
+            File targetFile = new File(fileSave, "report-" + title + System.currentTimeMillis() + ".pdf");
+
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(targetFile));
+            document.open();
+//            PdfContentByte cb = writer.getDirectContent();
+//            PdfTemplate tp = cb.createTemplate(pnlPrintReport.getWidth(), pnlPrintReport.getHeight());
+//            Graphics2D g2 = tp.createGraphics(pnlPrintReport.getWidth(), pnlPrintReport.getHeight());
+//            g2.scale(0.8, 1.0);
+//            pnlPrintReport.print(g2);
+//            g2.dispose();
+//            cb.addTemplate(tp, 5, 60);
+            java.awt.Image awtImage = getImageFromPanel(pnlPrint);
+
+            Image iTextImage = Image.getInstance(writer, awtImage, 1);
+
+            iTextImage.setAbsolutePosition(0, 400);
+            iTextImage.scaleToFit(PageSize.A4.width(), PageSize.A4.height());
+            document.add(iTextImage);
+
+            document.close();
+
+            SwingController controller = new SwingController();
+
+            SwingViewBuilder factory = new SwingViewBuilder(controller);
+
+            JPanel viewerComponentPanel = factory.buildViewerPanel();
+
+            // add interactive mouse link annotation support via callback
+            controller.getDocumentViewController().setAnnotationCallback(
+                    new org.icepdf.ri.common.MyAnnotationCallback(
+                            controller.getDocumentViewController()));
+
+            JFrame applicationFrame = new JFrame();
+
+            applicationFrame.add(viewerComponentPanel);
+
+            applicationFrame.pack();
+            applicationFrame.setVisible(true);
+
+            controller.openDocument(targetFile.getAbsolutePath());
+        } catch (DocumentException ex) {
+            ex.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMapGap;
     private javax.swing.JButton btnMinGap;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnRanking;
     private javax.swing.JButton btnRealData;
     private javax.swing.JScrollPane jScrollPane1;
+    private java.awt.Panel pnlPrint;
     private javax.swing.JTable tableScore;
     // End of variables declaration//GEN-END:variables
 
@@ -370,22 +493,35 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
     private void generateDataToTableRanking() {
         ratingModels = new DbConnection().SelectListRatingWithEmployee();
         criteriaModels = new DbConnection().SelectListCriteria();
+        ArrayList<RankingModel> rankingModels = new ArrayList<>();
         String[] splitFactor = new DbConnection().SelectPersentage().split(",");
         double totalCore = 0.0;
         double totalSecond = 0.0;
 
         String col[] = new String[3 + criteriaModels.size()];
-        col[0] = "No";
+        col[0] = "Ranking";
         col[1] = "Nama";
+        col[2] = "Total";
+
         DefaultTableModel tableModel = null;
         for (int i = 0; i < ratingModels.size(); i++) {
-            Object[] data = new Object[3 + criteriaModels.size()];
-            data[0] = i + 1;
-            data[1] = ratingModels.get(i).getEmployeeaName();
+            RankingModel rankingModel = new RankingModel();
+            rankingModel.setEmployeeName(ratingModels.get(i).getEmployeeaName());
+//            Object[] data = new Object[3 + criteriaModels.size()];
+//            data[0] = i + 1;
+//            data[1] = ratingModels.get(i).getEmployeeaName();
             for (int j = 0; j < criteriaModels.size(); j++) {
                 col[j + 3] = criteriaModels.get(j).getCriteriaName() + "(" + criteriaModels.get(j).getCriteriaDesc() + ")";
                 if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
-                    data[j + 3] = "0";
+//                    data[j + 3] = "0";
+                    rankingModel.setK1(0.0);
+                    rankingModel.setK2(0.0);
+                    rankingModel.setK3(0.0);
+                    rankingModel.setK4(0.0);
+                    rankingModel.setK5(0.0);
+                    rankingModel.setTotalCore(0.0);
+                    rankingModel.setTotalSecond(0.0);
+                    rankingModel.setTotalScore(0.0);
                 } else {
                     RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
                     switch (j) {
@@ -397,7 +533,9 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                                     mapGapK1 = gapScore[x];
                                 }
                             }
-                            data[j + 3] = mapGapK1;
+//                            data[j + 3] = mapGapK1;
+                            rankingModel.setK1(mapGapK1);
+
                             if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
                                 totalCore += mapGapK1;
                             } else {
@@ -412,7 +550,8 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                                     mapGapK2 = gapScore[x];
                                 }
                             }
-                            data[j + 3] = mapGapK2;
+//                            data[j + 3] = mapGapK2;
+                            rankingModel.setK2(mapGapK2);
                             if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
                                 totalCore += mapGapK2;
                             } else {
@@ -427,7 +566,8 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                                     mapGapK3 = gapScore[x];
                                 }
                             }
-                            data[j + 3] = mapGapK3;
+//                            data[j + 3] = mapGapK3;
+                            rankingModel.setK3(mapGapK3);
                             if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
                                 totalCore += mapGapK3;
                             } else {
@@ -442,7 +582,8 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                                     mapGapK4 = gapScore[x];
                                 }
                             }
-                            data[j + 3] = mapGapK4;
+//                            data[j + 3] = mapGapK4;
+                            rankingModel.setK4(mapGapK4);
                             if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
                                 totalCore += mapGapK4;
                             } else {
@@ -457,7 +598,8 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                                     mapGapK5 = gapScore[x];
                                 }
                             }
-                            data[j + 3] = mapGapK5;
+//                            data[j + 3] = mapGapK5;
+                            rankingModel.setK5(mapGapK5);
                             if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
                                 totalCore += mapGapK5;
                             } else {
@@ -470,24 +612,55 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
                 }
             }
 
-            System.out.println("employee : " + data[1]);
+            System.out.println("employee : " + rankingModel.getEmployeeName());
             System.out.println("core : " + (totalCore / criteriaModels.size()));
             System.out.println("second : " + (totalSecond / criteriaModels.size()));
             double rankingCore = (Double.parseDouble(splitFactor[0]) / 100) * (totalSecond / criteriaModels.size());
             double rankingSecond = (Double.parseDouble(splitFactor[1]) / 100) * (totalSecond / criteriaModels.size());
+            rankingModel.setTotalCore(rankingCore);
+            rankingModel.setTotalSecond(rankingSecond);
             System.out.println("core : " + rankingCore);
             System.out.println("second : " + rankingSecond);
-            col[2] = "Total";
-            data[2] = rankingCore + rankingSecond;
+//            data[2] = rankingCore + rankingSecond;
+
+            rankingModel.setTotalScore(rankingCore + rankingSecond);
+            rankingModels.add(rankingModel);
 
             if (tableModel == null) {
                 tableModel = new DefaultTableModel(col, 0);
             }
+        }
+        Collections.sort(rankingModels, new Comparator<RankingModel>() {
 
+            public int compare(RankingModel o1, RankingModel o2) {
+                return String.valueOf(o2.totalScore).compareTo(String.valueOf(o1.totalScore));
+            }
+        });
+
+        for (int z = 0; z < rankingModels.size(); z++) {
+            RankingModel rankingModel = rankingModels.get(z);
+            Object[] data = new Object[3 + criteriaModels.size()];
+            data[0] = z + 1;
+            data[1] = rankingModel.getEmployeeName();
+            data[2] = rankingModel.getTotalScore();
+            data[3] = rankingModel.getK1();
+            data[4] = rankingModel.getK2();
+            data[5] = rankingModel.getK3();
+            data[6] = rankingModel.getK4();
+            data[7] = rankingModel.getK5();
             tableModel.addRow(data);
+
         }
 
         System.out.println("raw count rating by employee " + tableModel.getRowCount());
         tableScore.setModel(tableModel);
+    }
+
+    public static java.awt.Image getImageFromPanel(Component component) {
+
+        BufferedImage image = new BufferedImage(component.getWidth(),
+                component.getHeight(), BufferedImage.TYPE_INT_RGB);
+        component.paint(image.getGraphics());
+        return image;
     }
 }

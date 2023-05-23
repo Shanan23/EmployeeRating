@@ -38,8 +38,10 @@ public class FrmMenu extends javax.swing.JFrame {
         btnEmployee = new javax.swing.JButton();
         btnRatingFirst = new javax.swing.JButton();
         btnRatingSecond = new javax.swing.JButton();
+        lblTitle = new java.awt.Label();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(102, 255, 255));
 
         javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
         desktopPane.setLayout(desktopPaneLayout);
@@ -87,6 +89,10 @@ public class FrmMenu extends javax.swing.JFrame {
             }
         });
 
+        lblTitle.setBackground(new java.awt.Color(102, 255, 255));
+        lblTitle.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
+        lblTitle.setText("label1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -94,21 +100,27 @@ public class FrmMenu extends javax.swing.JFrame {
             .addComponent(desktopPane)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnHome)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCriteria)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEmployee)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRatingFirst)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRatingSecond)
-                .addContainerGap(400, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnHome)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCriteria)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEmployee)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRatingFirst)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRatingSecond)
+                        .addGap(0, 390, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 74, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnHome)
                     .addComponent(btnCriteria)
@@ -125,6 +137,7 @@ public class FrmMenu extends javax.swing.JFrame {
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
         try {
             desktopPane.removeAll();
+            lblTitle.setText("Home");
             HomeFrm homeFrm = new HomeFrm();
             homeFrm.setMaximum(true);
             BasicInternalFrameUI ui = (BasicInternalFrameUI) homeFrm.getUI();
@@ -138,6 +151,7 @@ public class FrmMenu extends javax.swing.JFrame {
     private void btnCriteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriteriaActionPerformed
         try {
             desktopPane.removeAll();
+            lblTitle.setText("Kriteria");
             CriteriaFrm criteriaFrm = new CriteriaFrm();
             criteriaFrm.setMaximum(true);
             BasicInternalFrameUI ui = (BasicInternalFrameUI) criteriaFrm.getUI();
@@ -151,6 +165,7 @@ public class FrmMenu extends javax.swing.JFrame {
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
         try {
             desktopPane.removeAll();
+            lblTitle.setText("Karyawan");
             EmployeeFrm employeeFrm = new EmployeeFrm();
             employeeFrm.setMaximum(true);
             BasicInternalFrameUI ui = (BasicInternalFrameUI) employeeFrm.getUI();
@@ -164,6 +179,7 @@ public class FrmMenu extends javax.swing.JFrame {
     private void btnRatingFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRatingFirstActionPerformed
         try {
             desktopPane.removeAll();
+            lblTitle.setText("Penilaian");
             RatingFrm ratingFrm = new RatingFrm();
             ratingFrm.setMaximum(true);
             BasicInternalFrameUI ui = (BasicInternalFrameUI) ratingFrm.getUI();
@@ -177,6 +193,7 @@ public class FrmMenu extends javax.swing.JFrame {
     private void btnRatingSecondActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRatingSecondActionPerformed
         try {
             desktopPane.removeAll();
+            lblTitle.setText("Perhitungan");
             CalculatedFrm calculatedFrm = new CalculatedFrm();
             calculatedFrm.setMaximum(true);
             BasicInternalFrameUI ui = (BasicInternalFrameUI) calculatedFrm.getUI();
@@ -229,5 +246,6 @@ public class FrmMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnRatingFirst;
     private javax.swing.JButton btnRatingSecond;
     private javax.swing.JDesktopPane desktopPane;
+    private java.awt.Label lblTitle;
     // End of variables declaration//GEN-END:variables
 }
