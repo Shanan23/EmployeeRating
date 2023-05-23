@@ -4,17 +4,52 @@
  */
 package employeerating;
 
+import com.google.gson.Gson;
+import employeerating.dialog.CriteriaDialog;
+import employeerating.dialog.ScoreDialog;
+import employeerating.model.CriteriaModel;
+import employeerating.model.RatingModel;
+import employeerating.model.RatingValueModel;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author macbookpro
  */
 public class CalculatedFrm extends javax.swing.JInternalFrame {
 
+    private String employeeId;
+    private final Frame frame;
+    private ArrayList<RatingModel> ratingModels;
+    private ArrayList<CriteriaModel> criteriaModels;
+    int[] gap = {0, 1, -1, 2, -2, 3, -3, 4, -4};
+    double[] gapScore = {5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1};
+
+    int gapK1, gapK2, gapK3, gapK4, gapK5 = 0;
+
     /**
      * Creates new form HomeFrm
      */
     public CalculatedFrm() {
         initComponents();
+        generateDataToTable();
+        JInternalFrame internalFrame = this; // Replace with your internal frame
+
+        frame = (Frame) SwingUtilities.getAncestorOfClass(JFrame.class, internalFrame);
+        if (frame != null) {
+            // You have the frame reference
+            System.out.println("Found frame: " + frame.getTitle());
+        } else {
+            // Frame not found
+            System.out.println("Could not find frame for the internal frame.");
+        }
     }
 
     /**
@@ -26,32 +61,433 @@ public class CalculatedFrm extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableScore = new javax.swing.JTable();
+        btnRealData = new javax.swing.JButton();
+        btnMinGap = new javax.swing.JButton();
+        btnMapGap = new javax.swing.JButton();
+        btnRanking = new javax.swing.JButton();
 
         setSize(new java.awt.Dimension(100, 100));
 
-        jLabel1.setText("Calculated Frame");
+        tableScore.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableScore.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableScoreMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableScore);
+
+        btnRealData.setText("Data Asli");
+        btnRealData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRealDataActionPerformed(evt);
+            }
+        });
+
+        btnMinGap.setText("Menghitung Gap");
+        btnMinGap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinGapActionPerformed(evt);
+            }
+        });
+
+        btnMapGap.setText("Pemetaan Gap");
+        btnMapGap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapGapActionPerformed(evt);
+            }
+        });
+
+        btnRanking.setText("Nilai Total");
+        btnRanking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRankingActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(216, 216, 216)
-                .addComponent(jLabel1)
-                .addContainerGap(407, Short.MAX_VALUE))
+                .addComponent(btnRealData)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnMinGap)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnMapGap)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRanking)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(jLabel1)
-                .addContainerGap(252, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(62, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRealData)
+                    .addComponent(btnMinGap)
+                    .addComponent(btnMapGap)
+                    .addComponent(btnRanking))
+                .addGap(36, 36, 36))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tableScoreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableScoreMouseClicked
+
+    }//GEN-LAST:event_tableScoreMouseClicked
+
+    private void btnRealDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealDataActionPerformed
+        // TODO add your handling code here:
+        generateDataToTable();
+    }//GEN-LAST:event_btnRealDataActionPerformed
+
+    private void btnMinGapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinGapActionPerformed
+        // TODO add your handling code here:
+        generateDataToTableMinGap();
+    }//GEN-LAST:event_btnMinGapActionPerformed
+
+    private void btnMapGapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapGapActionPerformed
+        // TODO add your handling code here:
+        generateDataToTableMapGap();
+    }//GEN-LAST:event_btnMapGapActionPerformed
+
+    private void btnRankingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRankingActionPerformed
+        // TODO add your handling code here:
+        generateDataToTableRanking();
+    }//GEN-LAST:event_btnRankingActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnMapGap;
+    private javax.swing.JButton btnMinGap;
+    private javax.swing.JButton btnRanking;
+    private javax.swing.JButton btnRealData;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableScore;
     // End of variables declaration//GEN-END:variables
+
+    private void generateDataToTable() {
+        ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        criteriaModels = new DbConnection().SelectListCriteria();
+        String col[] = new String[2 + criteriaModels.size()];
+        col[0] = "No";
+        col[1] = "Nama";
+        DefaultTableModel tableModel = null;
+        for (int i = 0; i < ratingModels.size(); i++) {
+            Object[] data = new Object[2 + criteriaModels.size()];
+            data[0] = i + 1;
+            data[1] = ratingModels.get(i).getEmployeeaName();
+            for (int j = 0; j < criteriaModels.size(); j++) {
+                col[j + 2] = criteriaModels.get(j).getCriteriaName() + "(" + criteriaModels.get(j).getCriteriaDesc() + ")";
+                if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
+                    data[j + 2] = "0";
+                } else {
+                    RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
+                    switch (j) {
+                        case 0:
+                            data[j + 2] = ratingValueModel.K1;
+                            break;
+                        case 1:
+                            data[j + 2] = ratingValueModel.K2;
+                            break;
+                        case 2:
+                            data[j + 2] = ratingValueModel.K3;
+                            break;
+                        case 3:
+                            data[j + 2] = ratingValueModel.K4;
+                            break;
+                        case 4:
+                            data[j + 2] = ratingValueModel.K5;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (tableModel == null) {
+                tableModel = new DefaultTableModel(col, 0);
+            }
+
+            tableModel.addRow(data);
+        }
+
+        System.out.println("raw count rating by employee " + tableModel.getRowCount());
+        tableScore.setModel(tableModel);
+    }
+
+    private void generateDataToTableMinGap() {
+        ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        criteriaModels = new DbConnection().SelectListCriteria();
+        String col[] = new String[2 + criteriaModels.size()];
+        col[0] = "No";
+        col[1] = "Nama";
+        DefaultTableModel tableModel = null;
+        for (int i = 0; i < ratingModels.size(); i++) {
+            Object[] data = new Object[2 + criteriaModels.size()];
+            data[0] = i + 1;
+            data[1] = ratingModels.get(i).getEmployeeaName();
+            for (int j = 0; j < criteriaModels.size(); j++) {
+                col[j + 2] = criteriaModels.get(j).getCriteriaName() + "(" + criteriaModels.get(j).getCriteriaDesc() + ")";
+                if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
+                    data[j + 2] = "0";
+                } else {
+                    RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
+                    switch (j) {
+                        case 0:
+                            gapK1 = Integer.valueOf(ratingValueModel.K1) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            data[j + 2] = gapK1;
+                            break;
+                        case 1:
+                            gapK2 = Integer.valueOf(ratingValueModel.K2) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            data[j + 2] = gapK2;
+                            break;
+                        case 2:
+                            gapK3 = Integer.valueOf(ratingValueModel.K3) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            data[j + 2] = gapK3;
+                            break;
+                        case 3:
+                            gapK4 = Integer.valueOf(ratingValueModel.K4) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            data[j + 2] = gapK4;
+                            break;
+                        case 4:
+                            gapK5 = Integer.valueOf(ratingValueModel.K5) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            data[j + 2] = gapK5;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (tableModel == null) {
+                tableModel = new DefaultTableModel(col, 0);
+            }
+
+            tableModel.addRow(data);
+        }
+
+        System.out.println("raw count rating by employee " + tableModel.getRowCount());
+        tableScore.setModel(tableModel);
+    }
+
+    private void generateDataToTableMapGap() {
+        ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        criteriaModels = new DbConnection().SelectListCriteria();
+        String col[] = new String[2 + criteriaModels.size()];
+        col[0] = "No";
+        col[1] = "Nama";
+        DefaultTableModel tableModel = null;
+        for (int i = 0; i < ratingModels.size(); i++) {
+            Object[] data = new Object[2 + criteriaModels.size()];
+            data[0] = i + 1;
+            data[1] = ratingModels.get(i).getEmployeeaName();
+            for (int j = 0; j < criteriaModels.size(); j++) {
+                col[j + 2] = criteriaModels.get(j).getCriteriaName() + "(" + criteriaModels.get(j).getCriteriaDesc() + ")";
+                if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
+                    data[j + 2] = "0";
+                } else {
+                    RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
+                    switch (j) {
+                        case 0:
+                            gapK1 = Integer.valueOf(ratingValueModel.K1) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK1 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK1 == gap[x]) {
+                                    mapGapK1 = gapScore[x];
+                                }
+                            }
+                            data[j + 2] = mapGapK1;
+                            break;
+                        case 1:
+                            gapK2 = Integer.valueOf(ratingValueModel.K2) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK2 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK2 == gap[x]) {
+                                    mapGapK2 = gapScore[x];
+                                }
+                            }
+                            data[j + 2] = mapGapK2;
+                            break;
+                        case 2:
+                            gapK3 = Integer.valueOf(ratingValueModel.K3) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK3 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK3 == gap[x]) {
+                                    mapGapK3 = gapScore[x];
+                                }
+                            }
+                            data[j + 2] = mapGapK3;
+                            break;
+                        case 3:
+                            gapK4 = Integer.valueOf(ratingValueModel.K4) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK4 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK4 == gap[x]) {
+                                    mapGapK4 = gapScore[x];
+                                }
+                            }
+                            data[j + 2] = mapGapK4;
+                            break;
+                        case 4:
+                            gapK5 = Integer.valueOf(ratingValueModel.K5) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK5 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK5 == gap[x]) {
+                                    mapGapK5 = gapScore[x];
+                                }
+                            }
+                            data[j + 2] = mapGapK5;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (tableModel == null) {
+                tableModel = new DefaultTableModel(col, 0);
+            }
+
+            tableModel.addRow(data);
+        }
+
+        System.out.println("raw count rating by employee " + tableModel.getRowCount());
+        tableScore.setModel(tableModel);
+    }
+
+    private void generateDataToTableRanking() {
+        ratingModels = new DbConnection().SelectListRatingWithEmployee();
+        criteriaModels = new DbConnection().SelectListCriteria();
+        String[] splitFactor = new DbConnection().SelectPersentage().split(",");
+        double totalCore = 0.0;
+        double totalSecond = 0.0;
+
+        String col[] = new String[3 + criteriaModels.size()];
+        col[0] = "No";
+        col[1] = "Nama";
+        DefaultTableModel tableModel = null;
+        for (int i = 0; i < ratingModels.size(); i++) {
+            Object[] data = new Object[3 + criteriaModels.size()];
+            data[0] = i + 1;
+            data[1] = ratingModels.get(i).getEmployeeaName();
+            for (int j = 0; j < criteriaModels.size(); j++) {
+                col[j + 3] = criteriaModels.get(j).getCriteriaName() + "(" + criteriaModels.get(j).getCriteriaDesc() + ")";
+                if (ratingModels.get(i).getRatingValue().equalsIgnoreCase("{}")) {
+                    data[j + 3] = "0";
+                } else {
+                    RatingValueModel ratingValueModel = new Gson().fromJson(ratingModels.get(i).getRatingValue(), RatingValueModel.class);
+                    switch (j) {
+                        case 0:
+                            gapK1 = Integer.valueOf(ratingValueModel.K1) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK1 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK1 == gap[x]) {
+                                    mapGapK1 = gapScore[x];
+                                }
+                            }
+                            data[j + 3] = mapGapK1;
+                            if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
+                                totalCore += mapGapK1;
+                            } else {
+                                totalSecond += mapGapK1;
+                            }
+                            break;
+                        case 1:
+                            gapK2 = Integer.valueOf(ratingValueModel.K2) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK2 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK2 == gap[x]) {
+                                    mapGapK2 = gapScore[x];
+                                }
+                            }
+                            data[j + 3] = mapGapK2;
+                            if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
+                                totalCore += mapGapK2;
+                            } else {
+                                totalSecond += mapGapK2;
+                            }
+                            break;
+                        case 2:
+                            gapK3 = Integer.valueOf(ratingValueModel.K3) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK3 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK3 == gap[x]) {
+                                    mapGapK3 = gapScore[x];
+                                }
+                            }
+                            data[j + 3] = mapGapK3;
+                            if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
+                                totalCore += mapGapK3;
+                            } else {
+                                totalSecond += mapGapK3;
+                            }
+                            break;
+                        case 3:
+                            gapK4 = Integer.valueOf(ratingValueModel.K4) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK4 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK4 == gap[x]) {
+                                    mapGapK4 = gapScore[x];
+                                }
+                            }
+                            data[j + 3] = mapGapK4;
+                            if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
+                                totalCore += mapGapK4;
+                            } else {
+                                totalSecond += mapGapK4;
+                            }
+                            break;
+                        case 4:
+                            gapK5 = Integer.valueOf(ratingValueModel.K5) - Integer.valueOf(criteriaModels.get(j).getCriteriaAmount());
+                            double mapGapK5 = 0.0;
+                            for (int x = 0; x < gap.length; x++) {
+                                if (gapK5 == gap[x]) {
+                                    mapGapK5 = gapScore[x];
+                                }
+                            }
+                            data[j + 3] = mapGapK5;
+                            if (criteriaModels.get(j).getCriteriaDesc().equalsIgnoreCase("core")) {
+                                totalCore += mapGapK5;
+                            } else {
+                                totalSecond += mapGapK5;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            System.out.println("employee : " + data[1]);
+            System.out.println("core : " + (totalCore / criteriaModels.size()));
+            System.out.println("second : " + (totalSecond / criteriaModels.size()));
+            double rankingCore = (Double.parseDouble(splitFactor[0]) / 100) * (totalSecond / criteriaModels.size());
+            double rankingSecond = (Double.parseDouble(splitFactor[1]) / 100) * (totalSecond / criteriaModels.size());
+            System.out.println("core : " + rankingCore);
+            System.out.println("second : " + rankingSecond);
+            col[2] = "Total";
+            data[2] = rankingCore + rankingSecond;
+
+            if (tableModel == null) {
+                tableModel = new DefaultTableModel(col, 0);
+            }
+
+            tableModel.addRow(data);
+        }
+
+        System.out.println("raw count rating by employee " + tableModel.getRowCount());
+        tableScore.setModel(tableModel);
+    }
 }

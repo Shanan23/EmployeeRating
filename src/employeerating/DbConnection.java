@@ -146,6 +146,30 @@ public class DbConnection {
         return resultList;
     }
 
+    public String SelectPersentage() {
+        ResultSet rsSelectPersentage = null;
+        String result = "";
+
+        try {
+            Connection conn = openConnection();
+            Statement stm = conn.createStatement();
+
+            rsSelectPersentage = stm.executeQuery("SELECT * FROM persentage LIMIT 1");
+
+            rsSelectPersentage.next();
+            String core = rsSelectPersentage.getString("core_factor");
+            String second = rsSelectPersentage.getString("secondary_factor");
+
+            result = core + "," + second;
+            closeConnection();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(DbConnection.class.getName() + " : " + ex.getMessage());
+        }
+        return result;
+    }
+
     public CriteriaModel SelectCriteriaByIndex(String index) {
         ResultSet rsSelectCriteria = null;
         CriteriaModel criteriaModel = new CriteriaModel();
